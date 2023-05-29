@@ -36,6 +36,9 @@ ln -s usr/bin "$DESTDIR/bin"
 ln -s usr/sbin "$DESTDIR/sbin"
 ln -s /proc/mounts "$DESTDIR/etc/mtab"
 
+# Required to avoid grep error
+touch modules
+
 . /usr/share/initramfs-tools/hook-functions
 
 copy_exec /bin/busybox
