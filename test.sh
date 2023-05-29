@@ -6,4 +6,4 @@ then
   KERNEL=$(uname -r)
 fi
 
-qemu-system-x86_64 -machine accel=kvm -m 2G -serial stdio -append "root=/dev/ram0 rw console=tty0" -kernel $(ls /boot/vmlinuz-$KERNEL) -initrd $1
+qemu-system-x86_64 -machine accel=kvm -m 2G -serial stdio -append "root=/dev/ram0 rw console=tty1" -kernel $(ls /boot/vmlinuz-$KERNEL) -initrd $1
