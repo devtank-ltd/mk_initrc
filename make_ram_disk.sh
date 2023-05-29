@@ -1,9 +1,13 @@
 #! /bin/bash
 
+if [ -z "$KERNEL" ]
+then
+  KERNEL=$(uname -r)
+fi
 
 export DESTDIR=$1
 export CONFDIR=$(readlink -f $(dirname $0))
-export version=$(uname -r)
+export version=$KERNEL
 export MODULESDIR=/lib/modules/$version
 export verbose="n"
 
@@ -32,12 +36,12 @@ ln -s usr/bin "$DESTDIR/bin"
 ln -s usr/sbin "$DESTDIR/sbin"
 ln -s /proc/mounts "$DESTDIR/etc/mtab"
 
-cp -v /bin/busybox "$DESTDIR/bin/"
+. /usr/share/initramfs-tools/hook-functions
+
+copy_exec /bin/busybox
+
 "$DESTDIR/bin/busybox" --install -s "$DESTDIR/bin/"
 for n in $(find "$DESTDIR/bin/" -type l); do rm $n; ln -s ./busybox $n; done
-
-
-. /usr/share/initramfs-tools/hook-functions
 
 copy_exec /usr/sbin/gdisk
 copy_exec /usr/sbin/e2fsck
@@ -50,10 +54,17 @@ add_loaded_modules
 force_load ata_piix
 force_load sd_mod
 
+# Take all the currently loaded modules into initrc
+modules=$(echo $(lsmod | awk 'NR>1 {print $1}'))
+for mod in $modules
+do
+  force_load $mod
+done
+
 cp "$CONFDIR/init" "$DESTDIR"
 chmod +x "$DESTDIR/init"
 
-depmod -b "$DESTDIR"
+depmod -b "$DESTDIR" $KERNEL
 
 echo "Wrapping up to cpio.gz file"
 cd "$DESTDIR"
