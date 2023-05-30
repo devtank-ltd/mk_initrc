@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -e
+
 if [ -z "$KERNEL" ]
 then
   KERNEL=$(uname -r)
@@ -18,7 +20,14 @@ then
   exit 1
 fi
 
-mkdir -p $DESTDIR
+rm -rf "$DESTDIR"
+
+mkdir -p "$DESTDIR"
+cp -a "$CONFDIR"/base/* "$DESTDIR/"
+grep root /etc/shadow > "$DESTDIR/"etc/shadow
+chown root:shadow "$DESTDIR/"etc/shadow
+chmod 640 "$DESTDIR/"etc/shadow
+
 mkdir -p "$DESTDIR/proc"
 mkdir -p "$DESTDIR/sys"
 mkdir -p "$DESTDIR/dev"
@@ -50,6 +59,7 @@ copy_exec /usr/sbin/gdisk
 copy_exec /usr/sbin/e2fsck
 copy_exec /usr/sbin/resize2fs
 copy_exec /usr/bin/lsblk
+copy_exec /usr/sbin/dropbear
 
 auto_add_modules net ata ide scsi block
 add_loaded_modules
@@ -64,7 +74,6 @@ do
   force_load $mod
 done
 
-cp "$CONFDIR/init" "$DESTDIR"
 chmod +x "$DESTDIR/init"
 
 depmod -b "$DESTDIR" $KERNEL
