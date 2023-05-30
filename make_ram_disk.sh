@@ -55,11 +55,16 @@ copy_exec /bin/busybox
 "$DESTDIR/bin/busybox" --install -s "$DESTDIR/bin/"
 for n in $(find "$DESTDIR/bin/" -type l); do rm $n; ln -s ./busybox $n; done
 
-copy_exec /usr/sbin/gdisk
-copy_exec /usr/sbin/e2fsck
-copy_exec /usr/sbin/resize2fs
-copy_exec /usr/bin/lsblk
-copy_exec /usr/sbin/dropbear
+exces=(/usr/sbin/gdisk /usr/sbin/e2fsck /usr/sbin/resize2fs /usr/bin/lsblk /usr/sbin/dropbear)
+for exe in ${exces[@]}
+do
+  if [ ! -e $exe ]
+  then
+    echo "$exe not found"
+    exit 1
+  fi
+  copy_exec $exe
+done
 
 auto_add_modules net ata ide scsi block
 add_loaded_modules
