@@ -71,6 +71,7 @@ add_loaded_modules
 
 force_load ata_piix
 force_load sd_mod
+force_load e1000 # Good for QEmu
 
 # Take all the currently loaded modules into initrc
 modules=$(echo $(lsmod | awk 'NR>1 {print $1}'))
