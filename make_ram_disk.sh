@@ -74,8 +74,6 @@ do
   force_load $mod
 done
 
-chmod +x "$DESTDIR/init"
-
 depmod -b "$DESTDIR" $KERNEL
 
 echo "Wrapping up to cpio.gz file"
