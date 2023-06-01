@@ -21,3 +21,13 @@ Files
 * kexec.sh - Reboot system with given ramdisk.
 
 All will use the current kernel, unless the environment variable KERNEL is set.
+
+
+Example
+=======
+
+    e2fsck -f /dev/vda1 # You have to do this because of the kexec
+    resize2fs /dev/vda1 30G # Resize to small that new partition size, in this case 30G for 32G
+    gdisk /dev/vda  # Delete p1 and recreate as 32G, then create fresh partion in empty space
+    resize2fs /dev/vda1 # Resize filesystem to what is aligned 32G
+    reboot -f # Hold on to your butts!
