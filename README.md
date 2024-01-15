@@ -4,7 +4,7 @@ Introduction
 What is this crazy thing?
 
 Well you know when you have a machine you only have remote access to, you have a console, but grub isn't being used.
-BUT you what to repartition, well this is my solution.
+BUT you want to repartition, well this is my solution.
 
 It builds a custom init RAM disk, with some tools in it, which you can then boot to with kexec.
 
